@@ -146,7 +146,7 @@ class ImageTextureView: UIView {
         glVertexAttribPointer(GLuint(textureCoordinate), 2, GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(strideSize), textureOffsetPointer)
         
         // (8) 加载纹理
-        loadTexture("mac")
+        loadTexture("tower")
         
         // 设置纹理采样器 sampler2D; "colorMap" 与 imageFragmentShader.fsh 里定义的一致
         let uniformLocation = glGetUniformLocation(program, "colorMap")
@@ -275,6 +275,7 @@ extension ImageTextureView {
 }
 
 extension ImageTextureView {
+    // MARK: - 配置旋转矩阵
     private func rotateImageWithRotateMatrix() {
         let shouldRotateLocation = glGetUniformLocation(program, "shouldRotate")
         glUniform1i(shouldRotateLocation, 1)
