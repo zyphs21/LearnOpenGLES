@@ -18,6 +18,17 @@ class ImageTextureView: UIView {
     
     private var program = GLuint()
     
+    private var rotateMethod: GLSLRenderImageVC.RotateMethod!
+    
+    init(frame: CGRect, rotateMethod: GLSLRenderImageVC.RotateMethod) {
+        super.init(frame: frame)
+        self.rotateMethod = rotateMethod
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func layoutSubviews() {
         setupLayer()
         setupContext()
@@ -141,6 +152,11 @@ class ImageTextureView: UIView {
         let uniformLocation = glGetUniformLocation(program, "colorMap")
         glUniform1i(uniformLocation, 0)
         
+        // 旋转纹理图片
+        if case .rotateMatrix = rotateMethod {
+            rotateImageWithRotateMatrix()
+        }
+        
         // (9) 绘图
         glDrawArrays(GLenum(GL_TRIANGLES), 0, 6)
         
@@ -183,7 +199,10 @@ extension ImageTextureView {
     
     // MARK: - 加载纹理
     private func loadTexture(_ texture: String) {
-        guard let textureImage = UIImage(named: texture)?.cgImage else { return }
+        guard let textureImage = UIImage(named: texture)?.cgImage else {
+            print("---无此纹理图片--")
+            return
+        }
         let width = textureImage.width
         let height = textureImage.height
         // 计算图片所占字节大小 (width * height * rgba)
@@ -193,6 +212,13 @@ extension ImageTextureView {
                                 space: textureImage.colorSpace!,
                                 bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
         let imageRect = CGRect(x: 0, y: 0, width: width, height: width)
+        
+        if case .quartzDrawing = rotateMethod {
+            // 上下翻转图片
+            context?.translateBy(x: 0, y: imageRect.size.height)
+            context?.scaleBy(x: 1.0, y: -1.0)
+        }
+        
         context?.draw(textureImage, in: imageRect)
         
         /*
@@ -245,5 +271,26 @@ extension ImageTextureView {
         } else {
             print("--- Link Program Success ---")
         }
+    }
+}
+
+extension ImageTextureView {
+    private func rotateImageWithRotateMatrix() {
+        let shouldRotateLocation = glGetUniformLocation(program, "shouldRotate")
+        glUniform1i(shouldRotateLocation, 1)
+        
+        
+        let radian = 180 * Float.pi / 180
+        let s = sin(radian)
+        let c = cos(radian)
+        let rotateMat: [GLfloat] = [
+            c, -s,  0,  0,
+            s,  c,  0,  0,
+            0,  0,  1,  0,
+            0,  0,  0,  1
+        ]
+        
+        let rotateMatrix = glGetUniformLocation(program, "rotateMatrix")
+        glUniformMatrix4fv(rotateMatrix, 1, GLboolean(GL_FALSE), rotateMat)
     }
 }
