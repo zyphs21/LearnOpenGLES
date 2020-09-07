@@ -8,21 +8,23 @@
 
 import UIKit
 
-class ImageTextureView: UIView {
+class ImageTextureView: UIView, GLViewable {
+    var eaglLayer: CAEAGLLayer!
+    var eaglContext: EAGLContext!
     
-    private var eaglLayer: CAEAGLLayer!
-    private var eaglContext: EAGLContext!
+    var renderBuffer = GLuint()
+    var frameBuffer = GLuint()
     
-    private var renderBuffer = GLuint()
-    private var frameBuffer = GLuint()
-    
-    private var program = GLuint()
+    var shaderProgram = GLuint()
     
     private var rotateMethod: GLSLRenderImageVC.RotateMethod!
     
     init(frame: CGRect, rotateMethod: GLSLRenderImageVC.RotateMethod) {
         super.init(frame: frame)
         self.rotateMethod = rotateMethod
+        setupLayer()
+        setupContext()
+        setupShaderProgram()
     }
     
     required init?(coder: NSCoder) {
@@ -30,9 +32,9 @@ class ImageTextureView: UIView {
     }
     
     override func layoutSubviews() {
-        setupLayer()
-        setupContext()
         clearRenderAndFrameBuffer()
+        // TODO: - 疑问：调用此方法无法成功，分开调用却可以
+//        setupRenderAndFrameBuffer()
         setupRenderBuffer()
         setupFrameBuffer()
         render()
@@ -53,14 +55,14 @@ class ImageTextureView: UIView {
         return CAEAGLLayer.self
     }
     
-    // MARK: - 2. 设置上下文 Context
+    // 设置上下文 Context
     private func setupContext() {
         // TODO: - 改成 openGLES3
         eaglContext = EAGLContext(api: .openGLES2)
         EAGLContext.setCurrent(eaglContext)
     }
     
-    // MARK: - 3. 清空缓存区 frameBuffer 和 renderBuffer
+    // 清空缓存区 frameBuffer 和 renderBuffer
     private func clearRenderAndFrameBuffer() {
         glDeleteBuffers(1, &renderBuffer)
         renderBuffer = 0
@@ -69,19 +71,39 @@ class ImageTextureView: UIView {
         frameBuffer = 0
     }
     
-    // MARK: - 4. 设置 RenderBuffer
+    // TODO: - ⚠️ 疑问：调用此方法会导致最后无法成功渲染内容，但是拆开 setupRenderBuffer 和 setupFrameBuffer 两个方法却可以。
+    private func setupRenderAndFrameBuffer() {
+        glGenBuffers(1, &renderBuffer)
+        glBindBuffer(GLenum(GL_RENDERBUFFER), renderBuffer)
+        eaglContext.renderbufferStorage(Int(GL_RENDERBUFFER), from: eaglLayer)
+        
+        glGenBuffers(1, &frameBuffer)
+        glBindBuffer(GLenum(GL_FRAMEBUFFER), frameBuffer)
+        glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), renderBuffer)
+    }
+    
     private func setupRenderBuffer() {
         glGenRenderbuffers(1, &renderBuffer)
         glBindRenderbuffer(GLenum(GL_RENDERBUFFER), renderBuffer)
-        self.eaglContext.renderbufferStorage(Int(GL_RENDERBUFFER), from: self.eaglLayer)
+        eaglContext.renderbufferStorage(Int(GL_RENDERBUFFER), from: eaglLayer)
     }
     
-    // MARK: - 5. 设置 FrameBuffer
     private func setupFrameBuffer() {
         glGenFramebuffers(1, &frameBuffer)
         glBindFramebuffer(GLenum(GL_FRAMEBUFFER), frameBuffer)
         // 将 colorRenderBuffer 绑定到 GL_COLOR_ATTACHMENT0
-        glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), self.renderBuffer)
+        glFramebufferRenderbuffer(GLenum(GL_FRAMEBUFFER), GLenum(GL_COLOR_ATTACHMENT0), GLenum(GL_RENDERBUFFER), renderBuffer)
+    }
+    
+    private func setupShaderProgram() {
+        guard let vertexFile = Bundle.main.path(forResource: "imageVetexShader", ofType: "vsh")
+            , let fragmentFile = Bundle.main.path(forResource: "imageFragmentShader", ofType: "fsh") else {
+                print("---找不到着色器文件---")
+                return
+        }
+        
+        // 加载 Shader
+        shaderProgram = loadShader(vertexFile: vertexFile, fragmentFile: fragmentFile)
     }
     
     // MARK: - 6. 绘制
@@ -94,25 +116,12 @@ class ImageTextureView: UIView {
         let y = frame.origin.y * scale
         let width = frame.size.width * scale
         let height = frame.size.height * scale
-        // (1) 设置视口大小
+        //  设置视口大小
         glViewport(GLint(x), GLint(y), GLsizei(width), GLsizei(height))
-        
-        // (2) 获取顶点/片元着色器
-        guard let vertexFile = Bundle.main.path(forResource: "imageVetexShader", ofType: "vsh")
-            , let fragmentFile = Bundle.main.path(forResource: "imageFragmentShader", ofType: "fsh") else {
-                print("---找不到着色器文件---")
-                return
-        }
-        
-        // (3) 加载 Shader
-        program = loadShader(vertexFile: vertexFile, fragmentFile: fragmentFile)
-        
-        // (4) 链接
-        glLinkProgram(program)
-        printLinkProgramLog(program: &program)
-        
-        // (5) 使用 program
-        glUseProgram(program)
+        print("---ViewPort: \(width) x \(height)")
+                
+        //  使用 program
+        glUseProgram(shaderProgram)
         
         // (6) 处理顶点数据
         let vertexData: [GLfloat] = [
@@ -133,28 +142,30 @@ class ImageTextureView: UIView {
         glBufferData(GLenum(GL_ARRAY_BUFFER), vertexData.size(), vertexData, GLenum(GL_DYNAMIC_DRAW))
         
         // "position" 与 imageVetexShader.vsh 里定义的 position 名字一致
-        let position = glGetAttribLocation(program, "position")
+        let position = glGetAttribLocation(shaderProgram, "position")
         glEnableVertexAttribArray(GLuint(position))
         glVertexAttribPointer(GLuint(position), 3, GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(strideSize), nil)
         
         // (7) 处理纹理数据
-        let textureCoordinate = glGetAttribLocation(program, "textureCoordinate")
+        let textureCoordinate = glGetAttribLocation(shaderProgram, "textureCoordinate")
         glEnableVertexAttribArray(GLuint(textureCoordinate))
         let textureOffset = MemoryLayout<GLfloat>.stride * 3
         let textureOffsetPointer = UnsafeRawPointer(bitPattern: textureOffset)
         // 读取方式
         glVertexAttribPointer(GLuint(textureCoordinate), 2, GLenum(GL_FLOAT), GLboolean(GL_FALSE), GLsizei(strideSize), textureOffsetPointer)
         
-        // (8) 加载纹理
-        loadTexture("tower")
+        let texture = loadTexture("tower")
+        glActiveTexture(GLenum(GL_TEXTURE0))
+        glBindTexture(GLenum(GL_TEXTURE_2D), texture)
         
         // 设置纹理采样器 sampler2D; "colorMap" 与 imageFragmentShader.fsh 里定义的一致
-        let uniformLocation = glGetUniformLocation(program, "colorMap")
+        let uniformLocation = glGetUniformLocation(shaderProgram, "colorMap")
         glUniform1i(uniformLocation, 0)
         
         // 旋转纹理图片
         if case .rotateMatrix = rotateMethod {
-            rotateImageWithRotateMatrix()
+            // 都在 generateTexture() 方法里对图片进行翻转了
+//            rotateImageWithRotateMatrix()
         }
         
         // (9) 绘图
@@ -166,118 +177,20 @@ class ImageTextureView: UIView {
 }
 
 extension ImageTextureView {
-    // MARK: - 加载着色器
-    private func loadShader(vertexFile: String, fragmentFile: String) -> GLuint {
-        var vertexShader = GLuint()
-        var fragmentShader = GLuint()
-        let program = glCreateProgram()
-        
-        compileShader(&vertexShader, type: GLenum(GL_VERTEX_SHADER), filePath: vertexFile)
-        compileShader(&fragmentShader, type: GLenum(GL_FRAGMENT_SHADER), filePath: fragmentFile)
-        
-        glAttachShader(program, vertexShader)
-        glAttachShader(program, fragmentShader)
-        
-        glDeleteShader(vertexShader)
-        glDeleteShader(fragmentShader)
-        
-        return program
-    }
-    
-    // MARK: - 编译着色器
-    private func compileShader(_ shader: inout GLuint, type: GLenum, filePath: String) {
-        let sourceContent = try? String(contentsOfFile: filePath, encoding: .utf8)
-        let cStringContent = sourceContent?.cString(using: .utf8)
-        var sourcePointer = UnsafePointer<GLchar>(cStringContent)
-        
-        shader = glCreateShader(type) // 创建着色器对象
-        glShaderSource(shader, 1, &sourcePointer, nil) // 将着色器源码赋给 shader 对象
-        glCompileShader(shader) // 编译着色器代码
-        
-        printShaderCompileLog(shader: &shader)
-    }
-    
     // MARK: - 加载纹理
-    private func loadTexture(_ texture: String) {
+    private func loadTexture(_ texture: String) -> GLuint {
         guard let textureImage = UIImage(named: texture)?.cgImage else {
             print("---无此纹理图片--")
-            return
+            return GLuint()
         }
-        let width = textureImage.width
-        let height = textureImage.height
-        // 计算图片所占字节大小 (width * height * rgba)
-        let imageData = calloc(width * height * 4, MemoryLayout<GLubyte>.size)
-        let context = CGContext(data: imageData, width: width, height: height,
-                                bitsPerComponent: 8, bytesPerRow: width * 4,
-                                space: textureImage.colorSpace!,
-                                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
-        let imageRect = CGRect(x: 0, y: 0, width: width, height: width)
-        
-        if case .quartzDrawing = rotateMethod {
-            // 上下翻转图片
-            context?.translateBy(x: 0, y: imageRect.size.height)
-            context?.scaleBy(x: 1.0, y: -1.0)
-        }
-        
-        context?.draw(textureImage, in: imageRect)
-        
-        /*
-        var texture = GLuint()
-        glGenTextures(1, &texture)
-        glBindTexture(GLenum(GL_TEXTURE_2D), texture)
-        glActiveTexture(GLenum(texture))
-        */
-        // 绑定纹理到默认的纹理id
-        glBindTexture(GLenum(GL_TEXTURE_2D), 0)
-        
-        // 设置纹理属性
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MIN_FILTER), GL_LINEAR)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_MAG_FILTER), GL_LINEAR)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_S), GL_CLAMP_TO_EDGE)
-        glTexParameteri(GLenum(GL_TEXTURE_2D), GLenum(GL_TEXTURE_WRAP_T), GL_CLAMP_TO_EDGE)
-        
-        // 加载纹理数据
-        glTexImage2D(GLenum(GL_TEXTURE_2D), 0, GL_RGBA, GLsizei(width), GLsizei(height), 0, GLenum(GL_RGBA), GLenum(GL_UNSIGNED_BYTE), imageData)
-        
-        // 释放图片数据
-        free(imageData)
-    }
-}
-
-// MARK: - 辅助方法：打印 Compile Shader 和 Link Program 日志
-extension ImageTextureView {
-    
-    private func printShaderCompileLog(shader: inout GLuint) {
-        var status = GLint()
-        glGetShaderiv(shader, GLenum(GL_COMPILE_STATUS), &status)
-        if status == GL_FALSE {
-            var infoLog = [GLchar](repeating: 0, count: 512)
-            glGetShaderInfoLog(shader, GLsizei(infoLog.size()), nil, &infoLog)
-            let info = String(cString: infoLog, encoding: .utf8)
-            print("--- Compile Shader Error: \(String(describing: info)) ---")
-        } else {
-            print("--- Compile Shader Success ---")
-        }
-    }
-    
-    private func printLinkProgramLog(program: inout GLuint) {
-        var status = GLint()
-        glGetProgramiv(program, GLenum(GL_LINK_STATUS), &status)
-        if status == GL_FALSE {
-            var infoLog = [GLchar](repeating: 0, count: 512)
-            glGetProgramInfoLog(program, GLsizei(infoLog.size()), nil, &infoLog)
-            let info = String(cString: infoLog, encoding: .utf8)
-            print("--- Link Program Error: \(String(describing: info)) ---")
-        } else {
-            print("--- Link Program Success ---")
-        }
+        return generateTexture(from: textureImage)
     }
 }
 
 extension ImageTextureView {
     // MARK: - 配置旋转矩阵
     private func rotateImageWithRotateMatrix() {
-        let shouldRotateLocation = glGetUniformLocation(program, "shouldRotate")
+        let shouldRotateLocation = glGetUniformLocation(shaderProgram, "shouldRotate")
         glUniform1i(shouldRotateLocation, 1)
         
         
@@ -291,7 +204,7 @@ extension ImageTextureView {
             0,  0,  0,  1
         ]
         
-        let rotateMatrix = glGetUniformLocation(program, "rotateMatrix")
+        let rotateMatrix = glGetUniformLocation(shaderProgram, "rotateMatrix")
         glUniformMatrix4fv(rotateMatrix, 1, GLboolean(GL_FALSE), rotateMat)
     }
 }

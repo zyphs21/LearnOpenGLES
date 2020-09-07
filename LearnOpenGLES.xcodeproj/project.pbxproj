@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,10 @@
 		C00029CE243A0056004170F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C00029CC243A0056004170F0 /* LaunchScreen.storyboard */; };
 		C0410C942445C28200D02096 /* GLKitRenderImageVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0410C932445C28200D02096 /* GLKitRenderImageVC.swift */; };
 		C0410C972445E54500D02096 /* Texture.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C0410C962445E54500D02096 /* Texture.jpg */; };
+		C07BACEA247EA17200A2E12A /* RotatePyramidViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07BACE8247EA17200A2E12A /* RotatePyramidViewController.swift */; };
+		C07BACEB247EA17200A2E12A /* RotatePyramidViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C07BACE9247EA17200A2E12A /* RotatePyramidViewController.xib */; };
+		C07BACED247EA28F00A2E12A /* PyramidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07BACEC247EA28F00A2E12A /* PyramidView.swift */; };
+		C07BACEF247EAB4F00A2E12A /* BasicGLView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C07BACEE247EAB4F00A2E12A /* BasicGLView.swift */; };
 		C08C504B2442F34D00684C94 /* GLKitRenderBackgroundColorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08C504A2442F34D00684C94 /* GLKitRenderBackgroundColorVC.swift */; };
 		C08C504D2442FB6F00684C94 /* Vertex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08C504C2442FB6F00684C94 /* Vertex.swift */; };
 		C08C504F2442FC5300684C94 /* GLKitRenderRectangleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C08C504E2442FC5300684C94 /* GLKitRenderRectangleVC.swift */; };
@@ -21,9 +25,14 @@
 		C0CDDBE8244BFCC100D98AD6 /* ImageTextureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CDDBE7244BFCC100D98AD6 /* ImageTextureView.swift */; };
 		C0CDDBEA244C05DC00D98AD6 /* imageVetexShader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = C0CDDBE9244C05DC00D98AD6 /* imageVetexShader.vsh */; };
 		C0CDDBEE244C077D00D98AD6 /* imageFragmentShader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = C0CDDBED244C077D00D98AD6 /* imageFragmentShader.fsh */; };
+		C0D3B5322504CF1C00B944AA /* GLViewable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D3B5312504CF1C00B944AA /* GLViewable.swift */; };
+		C0D3B5342504DAAC00B944AA /* ImageTextureViewRaw.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D3B5332504DAAC00B944AA /* ImageTextureViewRaw.swift */; };
+		C22A6674DBB65CC3DCFECE46 /* Pods_LearnOpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A426C010C3F1EC7B6869E38 /* Pods_LearnOpenGLES.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6AFEFB63D3A9C24689A92FE5 /* Pods-LearnOpenGLES.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LearnOpenGLES.release.xcconfig"; path = "Target Support Files/Pods-LearnOpenGLES/Pods-LearnOpenGLES.release.xcconfig"; sourceTree = "<group>"; };
+		7A426C010C3F1EC7B6869E38 /* Pods_LearnOpenGLES.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LearnOpenGLES.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C00029BE243A0054004170F0 /* LearnOpenGLES.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LearnOpenGLES.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C00029C1243A0054004170F0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C00029C5243A0054004170F0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -32,6 +41,10 @@
 		C00029CF243A0056004170F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C0410C932445C28200D02096 /* GLKitRenderImageVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLKitRenderImageVC.swift; sourceTree = "<group>"; };
 		C0410C962445E54500D02096 /* Texture.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Texture.jpg; sourceTree = "<group>"; };
+		C07BACE8247EA17200A2E12A /* RotatePyramidViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotatePyramidViewController.swift; sourceTree = "<group>"; };
+		C07BACE9247EA17200A2E12A /* RotatePyramidViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RotatePyramidViewController.xib; sourceTree = "<group>"; };
+		C07BACEC247EA28F00A2E12A /* PyramidView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PyramidView.swift; sourceTree = "<group>"; };
+		C07BACEE247EAB4F00A2E12A /* BasicGLView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicGLView.swift; sourceTree = "<group>"; };
 		C08C504A2442F34D00684C94 /* GLKitRenderBackgroundColorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLKitRenderBackgroundColorVC.swift; sourceTree = "<group>"; };
 		C08C504C2442FB6F00684C94 /* Vertex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vertex.swift; sourceTree = "<group>"; };
 		C08C504E2442FC5300684C94 /* GLKitRenderRectangleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLKitRenderRectangleVC.swift; sourceTree = "<group>"; };
@@ -40,6 +53,9 @@
 		C0CDDBE7244BFCC100D98AD6 /* ImageTextureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTextureView.swift; sourceTree = "<group>"; };
 		C0CDDBE9244C05DC00D98AD6 /* imageVetexShader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = imageVetexShader.vsh; sourceTree = "<group>"; };
 		C0CDDBED244C077D00D98AD6 /* imageFragmentShader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = imageFragmentShader.fsh; sourceTree = "<group>"; };
+		C0D3B5312504CF1C00B944AA /* GLViewable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GLViewable.swift; sourceTree = "<group>"; };
+		C0D3B5332504DAAC00B944AA /* ImageTextureViewRaw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTextureViewRaw.swift; sourceTree = "<group>"; };
+		E9B7F35C57D1FAC8024BE44F /* Pods-LearnOpenGLES.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LearnOpenGLES.debug.xcconfig"; path = "Target Support Files/Pods-LearnOpenGLES/Pods-LearnOpenGLES.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,17 +63,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C22A6674DBB65CC3DCFECE46 /* Pods_LearnOpenGLES.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0DFB09571D290245D6E3C3B9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E9B7F35C57D1FAC8024BE44F /* Pods-LearnOpenGLES.debug.xcconfig */,
+				6AFEFB63D3A9C24689A92FE5 /* Pods-LearnOpenGLES.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		993FC432B2C2B124FB1324AD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7A426C010C3F1EC7B6869E38 /* Pods_LearnOpenGLES.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C00029B5243A0054004170F0 = {
 			isa = PBXGroup;
 			children = (
 				C00029C0243A0054004170F0 /* LearnOpenGLES */,
 				C00029BF243A0054004170F0 /* Products */,
+				0DFB09571D290245D6E3C3B9 /* Pods */,
+				993FC432B2C2B124FB1324AD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -80,6 +116,16 @@
 				C00029CF243A0056004170F0 /* Info.plist */,
 			);
 			path = LearnOpenGLES;
+			sourceTree = "<group>";
+		};
+		C029DA13247D4E4F0029DBB3 /* RotatePyramid */ = {
+			isa = PBXGroup;
+			children = (
+				C07BACE8247EA17200A2E12A /* RotatePyramidViewController.swift */,
+				C07BACE9247EA17200A2E12A /* RotatePyramidViewController.xib */,
+				C07BACEC247EA28F00A2E12A /* PyramidView.swift */,
+			);
+			path = RotatePyramid;
 			sourceTree = "<group>";
 		};
 		C0410C952445E4FD00D02096 /* Resources */ = {
@@ -123,7 +169,10 @@
 		C0CDDBE3244BFBF900D98AD6 /* GLSL */ = {
 			isa = PBXGroup;
 			children = (
+				C07BACEE247EAB4F00A2E12A /* BasicGLView.swift */,
+				C0D3B5312504CF1C00B944AA /* GLViewable.swift */,
 				C0CDDBE4244BFC2F00D98AD6 /* RenderImage */,
+				C029DA13247D4E4F0029DBB3 /* RotatePyramid */,
 			);
 			path = GLSL;
 			sourceTree = "<group>";
@@ -132,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				C0CDDBE5244BFC4500D98AD6 /* GLSLRenderImageVC.swift */,
+				C0D3B5332504DAAC00B944AA /* ImageTextureViewRaw.swift */,
 				C0CDDBE7244BFCC100D98AD6 /* ImageTextureView.swift */,
 				C0CDDBE9244C05DC00D98AD6 /* imageVetexShader.vsh */,
 				C0CDDBED244C077D00D98AD6 /* imageFragmentShader.fsh */,
@@ -146,9 +196,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C00029D2243A0056004170F0 /* Build configuration list for PBXNativeTarget "LearnOpenGLES" */;
 			buildPhases = (
+				200A9D2F0F5CEC8B9CF25AC7 /* [CP] Check Pods Manifest.lock */,
 				C00029BA243A0054004170F0 /* Sources */,
 				C00029BB243A0054004170F0 /* Frameworks */,
 				C00029BC243A0054004170F0 /* Resources */,
+				CAF8D4B438FE0B20AE53BCA7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -199,6 +251,7 @@
 			files = (
 				C0410C972445E54500D02096 /* Texture.jpg in Resources */,
 				C0CDDBEA244C05DC00D98AD6 /* imageVetexShader.vsh in Resources */,
+				C07BACEB247EA17200A2E12A /* RotatePyramidViewController.xib in Resources */,
 				C00029CE243A0056004170F0 /* LaunchScreen.storyboard in Resources */,
 				C0CDDBEE244C077D00D98AD6 /* imageFragmentShader.fsh in Resources */,
 				C00029CB243A0056004170F0 /* Assets.xcassets in Resources */,
@@ -206,6 +259,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		200A9D2F0F5CEC8B9CF25AC7 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LearnOpenGLES-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CAF8D4B438FE0B20AE53BCA7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LearnOpenGLES/Pods-LearnOpenGLES-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LearnOpenGLES/Pods-LearnOpenGLES-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LearnOpenGLES/Pods-LearnOpenGLES-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C00029BA243A0054004170F0 /* Sources */ = {
@@ -215,12 +310,17 @@
 				C08C504B2442F34D00684C94 /* GLKitRenderBackgroundColorVC.swift in Sources */,
 				C08C504F2442FC5300684C94 /* GLKitRenderRectangleVC.swift in Sources */,
 				C0CDDBE6244BFC4500D98AD6 /* GLSLRenderImageVC.swift in Sources */,
+				C0D3B5342504DAAC00B944AA /* ImageTextureViewRaw.swift in Sources */,
 				C0410C942445C28200D02096 /* GLKitRenderImageVC.swift in Sources */,
+				C07BACEF247EAB4F00A2E12A /* BasicGLView.swift in Sources */,
+				C07BACEA247EA17200A2E12A /* RotatePyramidViewController.swift in Sources */,
 				C08C504D2442FB6F00684C94 /* Vertex.swift in Sources */,
 				C08C50522442FE4000684C94 /* Array+Extension.swift in Sources */,
+				C07BACED247EA28F00A2E12A /* PyramidView.swift in Sources */,
 				C0CDDBE8244BFCC100D98AD6 /* ImageTextureView.swift in Sources */,
 				C00029C6243A0054004170F0 /* ViewController.swift in Sources */,
 				C00029C2243A0054004170F0 /* AppDelegate.swift in Sources */,
+				C0D3B5322504CF1C00B944AA /* GLViewable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +454,7 @@
 		};
 		C00029D3243A0056004170F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9B7F35C57D1FAC8024BE44F /* Pods-LearnOpenGLES.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -378,6 +479,7 @@
 		};
 		C00029D4243A0056004170F0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6AFEFB63D3A9C24689A92FE5 /* Pods-LearnOpenGLES.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
